@@ -19,14 +19,11 @@ A modern **Event Registration System** with a dark-themed UI. Users can register
 
 ## 🗂 Project Structure
 
-event-registration/
-├── index.html          # Registration page where users enter Name and Email
-├── view.html           # Page to view all registered users and export CSV
-├── style.css           # Shared CSS styles for both pages
-├── screenshots/        # Folder containing screenshots for README
-│   ├── registration.png
-│   └── view.png
-├── README.md           # Project documentation
+- `index.html` — Main landing page
+- `view.html` — View registrations page
+- `server.js` — Node.js server handling requests
+- `registrations.json` / `registeration.json` — JSON files for registration data
+- `package.json` — Project metadata and dependencies
 
 ---
 
