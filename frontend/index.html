@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Registration</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+  <div class="container">
+    <h1><i class="fas fa-user-plus"></i> Register</h1>
+
+    <div class="input-group">
+      <i class="fas fa-user"></i>
+      <input type="text" id="name" placeholder="Enter Name">
+    </div>
+
+    <div class="input-group">
+      <i class="fas fa-envelope"></i>
+      <input type="email" id="email" placeholder="Enter Email">
+    </div>
+
+    <button id="registerBtn">Register</button>
+
+    <div id="message" class="msg"></div>
+
+    <a href="view.html" class="view-link"><i class="fas fa-list"></i> View Registrations</a>
+  </div>
+
+  <script>
+    document.getElementById('registerBtn').onclick = async () => {
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const msg = document.getElementById('message');
+
+      if(!name || !email) {
+        msg.textContent = "Please enter both Name and Email!";
+        msg.className = "msg error";
+        return;
+      }
+
+      // Create registration object with current date
+      const registration = {
+        name,
+        email,
+        date: new Date().toISOString()
+      };
+
+      try {
+        const res = await fetch('/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(registration)
+        });
+
+        if(res.ok) {
+          msg.textContent = "Registration successful!";
+          msg.className = "msg success";
+          document.getElementById('name').value = '';
+          document.getElementById('email').value = '';
+        } else {
+          msg.textContent = "Failed to register!";
+          msg.className = "msg error";
+        }
+      } catch (e) {
+        console.error(e);
+        msg.textContent = "Error connecting to server!";
+        msg.className = "msg error";
+      }
+    };
+  </script>
+</body>
+</html>

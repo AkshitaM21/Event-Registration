@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>View Registrations</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+  <div class="container">
+    <h1><i class="fas fa-list"></i> Registered Users</h1>
+
+    <button id="exportBtn" class="export-btn">
+      <i class="fas fa-file-csv"></i> Export CSV
+    </button>
+
+    <table id="registrationsTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Rows loaded via JS -->
+      </tbody>
+    </table>
+
+    <a href="index.html" class="back-link">
+      <i class="fas fa-arrow-left"></i> Back to Registration
+    </a>
+  </div>
+
+  <script>
+    // Fetch registrations and populate table
+    async function loadRegistrations() {
+      try {
+        const response = await fetch('/registrations');
+        const data = await response.json();
+
+        const tbody = document.querySelector('#registrationsTable tbody');
+        tbody.innerHTML = data.map((entry, index) => {
+          // Automatically assign current date if undefined
+          const dateValue = entry.date ? new Date(entry.date) : new Date();
+          const formattedDate = dateValue.toLocaleString();
+
+          return `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${entry.name}</td>
+              <td>${entry.email}</td>
+              <td>${formattedDate}</td>
+            </tr>
+          `;
+        }).join('');
+      } catch (error) {
+        console.error('Error loading registrations:', error);
+      }
+    }
+
+    loadRegistrations();
+
+    // Export CSV
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      const rows = [['#', 'Name', 'Email', 'Date']];
+      const trs = document.querySelectorAll('#registrationsTable tbody tr');
+
+      trs.forEach(tr => {
+        const cells = Array.from(tr.children).map(td => td.innerText);
+        rows.push(cells);
+      });
+
+      const csvContent = rows.map(e => e.join(',')).join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'registrations.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>
